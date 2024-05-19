@@ -16,10 +16,6 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: false
       },
-      date: {
-        type: Sequelize.DATE,
-        defaultValue: Sequelize.NOW
-      },
       open: {
         type: Sequelize.FLOAT,
         allowNull: false

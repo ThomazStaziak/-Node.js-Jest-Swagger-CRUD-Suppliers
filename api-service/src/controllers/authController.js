@@ -7,11 +7,11 @@ const registerUserController = async (req, res) => {
         console.log(req.body)
 
         if (!email) {
-            return res.status(401).json({ message: 'email is required' });
+            return res.status(400).json({ message: 'email is required' });
         }
         
         if (!role) {
-            return res.status(401).json({ message: 'role is required' });
+            return res.status(400).json({ message: 'role is required' });
         }
 
         const user = await registerUser(email, role);
@@ -26,11 +26,11 @@ const loginUserController = async (req, res) => {
         const { email, password } = req.body;
 
         if (!email) {
-            return res.status(401).json({ message: 'email is required' });
+            return res.status(400).json({ message: 'email is required' });
         }
         
         if (!password) {
-            return res.status(401).json({ message: 'password is required' });
+            return res.status(400).json({ message: 'password is required' });
         }
 
         const token = await loginUser(email, password);
