@@ -1,5 +1,8 @@
 const request = require('supertest');
+const axios = require('axios');
 const app = require('../../src/app');
+
+jest.mock('axios');
 
 describe('Auth controller test', () => {
     describe('/register | POST Method', () => {
@@ -82,11 +85,50 @@ describe('Auth controller test', () => {
         });
 
         it('should return an error if the credentials are incorrect', async () => {
+            const randomEmail = `${Math.random().toString(36).substring(2)}@mail.com`;
+
+            await request(app)
+                .post('/register')
+                .send({ email: randomEmail, role: 'user' });
+
             const response = await request(app)
                 .get('/login')
-                .send({ email: 'test@mail.com', password: '123' });
+                .send({ email: randomEmail, password: '123' });
 
             expect(response.statusCode).toBe(400);
+            expect(response.body).toHaveProperty('message');
+        });
+    });
+
+    describe('/reset-password | POST Method', () => {
+        it('Should send e-mail', async () => {
+            axios.get.mockResolvedValue({
+                message: "New password has been sent to your email"
+            });
+
+            const randomEmail = `${Math.random().toString(36).substring(2)}@mail.com`;
+
+            const response = await request(app)
+                .post('/reset-password')
+                .send({ email: randomEmail });
+
+            expect(response.body).toHaveProperty('message');
+        });
+
+        it('should return an error if email is null', async () => {
+            const response = await request(app)
+                .post('/reset-password');
+
+            expect(response.statusCode).toBe(400);
+            expect(response.body).toHaveProperty('message');
+        });
+
+        it('should return an error if user not exists', async () => {
+            const response = await request(app)
+                .post('/reset-password')
+                .send({ email: 'nonexisting@mail.com' });
+
+            expect(response.statusCode).toBe(404);
             expect(response.body).toHaveProperty('message');
         });
     });

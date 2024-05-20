@@ -10,4 +10,12 @@ const loginSchema = Yup.object({
     password: Yup.string().required()
 });
 
-module.exports = { registerSchema, loginSchema };
+const resetSchema = Yup.object({
+    email: Yup.string().email().required(),
+});
+
+module.exports = { 
+    registerSchema, 
+    loginSchema,
+    resetSchema
+};
