@@ -1,9 +1,18 @@
 const express = require('express');
 const router = express.Router();
-const { verifyToken } = require('../middlewares/authMiddleware');
-const { getStockQuote } = require('../controllers/stockController');
+const { authorizeToken } = require('../middlewares/authMiddleware');
+const { authorizeRole } = require('../middlewares/roleMiddleware');
+const { authorizeValidation } = require('../middlewares/validationMiddleware');
+const { 
+    getStockQuoteController, 
+    getHistoryController, 
+    getStatsController
+} = require('../controllers/stockController');
+const { stockSchema } = require('../validations/stock');
 
 
-router.get('/stock', verifyToken, getStockQuote);
+router.get('/stock', authorizeToken, authorizeValidation(stockSchema, 'query'), getStockQuoteController);
+router.get('/history', authorizeToken, getHistoryController);
+router.get('/stats', authorizeToken, authorizeRole('admin'), getStatsController);
 
 module.exports = router;

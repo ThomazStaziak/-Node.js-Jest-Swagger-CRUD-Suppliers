@@ -42,7 +42,7 @@ const loginUser = async (email, password) => {
             throw new Error('Password is incorrect');
         }
 
-        const token = generateJwtToken({ id: user.id });
+        const token = generateJwtToken({ id: user.id, role: user.role });
 
         return { token };
     } catch (error) {

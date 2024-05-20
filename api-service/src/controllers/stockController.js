@@ -1,20 +1,46 @@
-const { getAndSaveStockQuote } = require('../services/stockService');
+const { 
+    getAndSaveStockQuote, 
+    getHistory,
+    getStats 
+} = require('../services/stockService');
 
-const getStockQuote = async (req, res) => {
+const getStockQuoteController = async (req, res) => {
     try {
         const userId = req.user.userId;
         const { q: stockCode } = req.query;
 
-        if (!stockCode) {
-            return res.status(400).json({ error: 'Stock code is required' });
-        }
-
         const stockQuote = await getAndSaveStockQuote(stockCode, userId);
 
-        res.status(200).json(stockQuote);
+        res.status(201).json(stockQuote);
     } catch (error) {
-        res.status(500).json({ error: 'Internal server error' });
+        res.status(500).json({ message: 'Internal server error' });
     }
 };
 
-module.exports = { getStockQuote };
+const getHistoryController = async (req, res) => {
+    try {
+        const userId = req.user.userId;
+        
+        const history = await getHistory(userId);
+
+        res.status(200).json(history);
+    } catch (error) {
+        res.status(500).json({ message: 'Internal server error' });
+    }
+}
+
+const getStatsController = async (req, res) => {
+    try {
+        const stats = await getStats();
+
+        res.status(200).json(stats);
+    } catch (error) {
+        res.status(500).json({ message: 'Internal server error' });
+    }
+}
+
+module.exports = { 
+    getStockQuoteController, 
+    getHistoryController,
+    getStatsController
+}
