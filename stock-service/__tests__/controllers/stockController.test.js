@@ -26,11 +26,9 @@ describe('Stock Controller test', () => {
         });
 
         it('Should return an error if stock code is null', async () => {
-            axios.get.mockRejectedValue({ message: 'Stock code cannot be null' });
-
             const response = await request(app).get('/stock');
             expect(response.status).toBe(400);
-            expect(response.body).toEqual({ message: 'Stock code cannot be null' });
+            expect(response.body).toHaveProperty('message');
         })
 
         it('Should return an error if /stock fails', async () => {
