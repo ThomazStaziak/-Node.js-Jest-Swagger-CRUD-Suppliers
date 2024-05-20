@@ -1,118 +1,145 @@
-<div align="center">
-    <img src="https://media.licdn.com/dms/image/D4E0BAQETyObSEmZH-A/company-logo_200_200/0/1693956448491/jobsity_llc_logo?e=1723075200&v=beta&t=rGq4fY1cprFyIaSabim0_bgb-QLCbJUk6Es9dXuua1w"/>
-</div>
 
-# Node.js Challenge
+# Stock Quote API
 
-## Description
+This project is a API with Node.js to allow users to get stock quotes. It consists of two separate services:
 
-This project is designed to test your knowledge of back-end web technologies, specifically in Node.js, REST APIs, and decoupled services (microservices).
+1.  **API Service**: Handles user requests for stock quotes and manages user registration, authentication, stats and history tracking.
+2.  **Stock Service**: Fetch an external API to retrieve stock information.
 
-## Assignment
+## Requirements
 
-The goal of this exercise is to create a simple API with Node.js, using or not any framework of your choice, to allow users to query [stock quotes](https://www.investopedia.com/terms/s/stockquote.asp). It is scaffolded with two Express apps, but you can use another backend Node.js framework of your preference.
+-   [Docker](https://docs.docker.com/get-docker/) and [Docker Compose](https://docs.docker.com/compose/install/) installed on your machine.
 
-The project consists of two separate services:
+## Usage
 
-* A user-facing API that will receive requests from registered users asking for quote information.
-* An internal stock service that queries external APIs to retrieve the requested quote information.
+### Starting the Services with Docker
 
-## Minimum requirements
- - You will need to **record a video explaining the code** you created, the decisions you made, its functionality, and demonstrating the complete operation of the challenge. _Remember to show the execution from scratch, it should not be running beforehand._
+1.  Build and start the services using Docker Compose:
 
-### API service
+    `docker-compose up --build` 
+    
+2.  The service will be available at:
+    -   API Service: `http://localhost:3003`
+   
+### Environment Variables
 
-* Endpoints in the API service should require authentication (no anonymous requests should be allowed). Each request should be authenticated via Basic Authentication.
-  * To register a user the API service must receive a request with an email address, user role and return a randomized password, like this:
+Both the API service and the Stock service require environment variables to be set for configuration.
+All the environment files will be sent in the e-mail of challenge delivering 
 
-    Request example:
+### API Endpoints
 
-    `POST /register`
+#### User Registration
 
-    ```json
-      { "email": "johndoe@contoso.com", "role": "user" }  //role could be user/admin
-    ```
+-   **Endpoint:** `POST /register`
+    
+-   **Description:** Registers a new user with the provided email and role.
+    
+-   **Request Body:**
+   
+    `{
+      "email": "peterparker@spiderman.com",
+      "role": "user"
+    }` 
+    
+-   **Response Body:**
+    
+    `{
+      "email": "peterparker@spiderman.com",
+      "password": "tehr23jl"
+    }` 
+    
 
-    Response example:
+#### Get Stock Quote
 
-    `POST /register`
+-   **Endpoint:** `GET /stock?q={stock_code}`
+    
+-   **Description:** Retrieves the stock quote for the specified stock code.
+    
+-   **Query Parameters:** Replace `{stock_code}` with the desired stock code.
+    
+-   **Response Body Example:**
 
-    ```json
-      { "email": "johndoe@contoso.com", "password": "bda5d07453dfde4440803cfcdec48d92" }
-    ```
-* When a user requests a stock quote (calls the stock endpoint in the api service), if it exists, it should be saved and related to that user in the database.
-  * The response returned by the API service should be like this:
-
-    `GET /stock?q=aapl.us`
-
-    ```json
-      {
+    `{
       "name": "APPLE",
       "symbol": "AAPL.US",
       "open": 123.66,
       "high": 123.66,
       "low": 122.49,
       "close": 123
+    }` 
+    
+
+#### User Query History
+
+-   **Endpoint:** `GET /history`
+    
+-   **Description:** Retrieves the user's stock quotes history.
+    
+-   **Response Body Example:**
+
+    `[
+      {
+        "date": "2021-04-01T19:20:30Z",
+        "name": "APPLE",
+        "symbol": "AAPL.US",
+        "open": 123.66,
+        "high": 123.66,
+        "low": 122.49,
+        "close": 123
+      },
+      {
+        "date": "2021-03-25T11:10:55Z",
+        "name": "APPLE",
+        "symbol": "AAPL.US",
+        "open": 121.10,
+        "high": 123.66,
+        "low": 122,
+        "close": 122
       }
-    ```
-  * A user can get their history of queries made to the api service by hitting the history endpoint. The endpoint should return the list of entries saved in the database, showing the latest entries first:
+    ]` 
+    
 
-    `GET /history`
+#### Statistics (Super User Only)
 
-    ```javascript
-    [
-        {"date": "2021-04-01T19:20:30Z", "name": "APPLE", "symbol": "AAPL.US", "open": "123.66", "high": 123.66, "low": 122.49, "close": "123"},
-        {"date": "2021-03-25T11:10:55Z", "name": "APPLE", "symbol": "AAPL.US", "open": "121.10", "high": 123.66, "low": 122, "close": "122"},
-        ...
-    ]
-    ```
-* A super user (and only super users) can hit the stats endpoint, which will return the top 5 most requested stocks:
+-   **Endpoint:** `GET /stats`
+    
+-   **Description:** Retrieves the top 5 most requested stocks.
+    
+-   **Response Body Example:**
+    
+    `[
+      { "stock": "AAPL.US", "times_requested": 5 },
+      { "stock": "MSFT.US", "times_requested": 2 }
+    ]` 
+    
 
-  (This endpoint will validate the user's role)
+#### Password Reset
 
-  `GET /stats`
+-   **Endpoint:** `POST /reset-password`
+    
+-   **Description:** Resets the user's password and sends the new password via email.
+    
+-   **Request Body:**
+    
+    `{
+      "email": "brucewayne@batman.com"
+    }` 
 
-  ```json
-  [
-      {"stock": "aapl.us", "times_requested": 5},
-      {"stock": "msft.us", "times_requested": 2},
-      ...
-  ]
-  ```
-* All endpoint responses should be in JSON format.
+### Running Tests
 
-### Stock service
+To run the unit and integration tests:
 
-* Assume this is an internal service, so requests to endpoints in this service don't need to be authenticated.
-* When a stock request is received, this service should query an external API to get the stock information. For this challenge, use this API: `https://stooq.com/q/l/?s={stock_code}&f=sd2t2ohlcvn&h&e=csv`.
-* Note that `{stock_code}` above is a parameter that should be replaced with the requested stock code.
-* You can see a list of available stock codes here: [https://stooq.com/t/?i=518](https://stooq.com/t/?i=518)
+1.  Ensure the services are running.
+    
+2.  Execute the tests using npm:
+    
+    `cd api-service
+    npm test`
+    
+    `cd ../stock-service
+    npm test` 
+    
 
-## Architecture
+### Swagger Documentation
 
-![Architecture Diagram](https://git.jobsity.com/jobsity/node-challenge/-/blob/master/architecture.png)
-
-1. A user makes a request asking for Nasdaq's current Stock quote: `GET /stock?q=ndq`
-2. The API service calls the stock service to retrieve the requested stock information
-3. The stock service delegates the call to the external API, parses the response and returns the information back to the API service.
-4. The API service saves the response from the stock service in the database.
-5. The data is formatted and returned to the user.
-
-## Bonuses
-
-The following features are optional to implement, but if you do, you'll be ranked higher in our evaluation process.
-
-* Add unit tests for the services.
-* Add contract/integration tests for the API service.
-* Use JWT instead of basic authentication for endpoints.
-* Use containers to orchestrate the services.
-* Use OpenAPI/Swagger to document the API.
-* Add endpoint to reset user password sending an email with the new password.
-
-## How to run the project
-
-* Install dependencies: `cd api-service; npm install` and `cd stock-service; npm install`
-* Start the api service: `node api-service`
-* Start the stock service: `node stock-service`
-
-**Important:** If your implementation requires different steps to start the services (like starting a rabbitMQ consumer), also different endpoints o payload data for the endpoints, document them in the Readme!
+The API documentation is available at `http://localhost:3003/api-docs` once the services are running.
