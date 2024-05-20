@@ -1,0 +1,304 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "API",
+    "description": "API documentation for API service",
+    "version": "1.0.0"
+  },
+  "host": "localhost:3003",
+  "basePath": "/",
+  "paths": {
+    "/register": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Register a new user",
+        "description": "This endpoint will return email, password and role",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "email": {
+                  "example": "peterparker@spiderman.com"
+                },
+                "role": {
+                  "example": "user"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "email": {
+                  "example": "peterparker@spiderman.com"
+                },
+                "password": {
+                  "example": "spiderrules"
+                },
+                "role": {
+                  "example": "user"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/login": {
+      "get": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Login a user",
+        "description": "This endpoint will return a jwt token",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "email": {
+                  "example": "peterparker@spiderman.com"
+                },
+                "password": {
+                  "example": "spiderrules"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "token": {
+                  "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/stock": {
+      "get": {
+        "tags": [
+          "Stock Quote"
+        ],
+        "summary": "Return a stock quote",
+        "description": "This endpoint will return a object with the stock quote",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          },
+          {
+            "name": "q",
+            "in": "query",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "example": "AT&T"
+                },
+                "symbol": {
+                  "example": "T.US"
+                },
+                "open": {
+                  "example": "17.38"
+                },
+                "high": {
+                  "example": "17.48"
+                },
+                "low": {
+                  "example": "17.355"
+                },
+                "close": {
+                  "example": "17.42"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/history": {
+      "get": {
+        "tags": [
+          "Stock Quote"
+        ],
+        "summary": "Return a stock quote",
+        "description": "This endpoint will return a object with the history",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "example": [
+                    {
+                      "date": {
+                        "example": "2024-05-20T17:06:11.773Z"
+                      },
+                      "name": {
+                        "example": "AT&T"
+                      },
+                      "symbol": {
+                        "example": "T.US"
+                      },
+                      "open": {
+                        "example": 17.38
+                      },
+                      "high": {
+                        "example": 17.48
+                      },
+                      "low": {
+                        "example": 17.355
+                      },
+                      "close": {
+                        "example": 17.42
+                      }
+                    },
+                    {
+                      "date": {
+                        "example": "2024-05-19T17:06:11.773Z"
+                      },
+                      "name": {
+                        "example": "AT&T"
+                      },
+                      "symbol": {
+                        "example": "T.US"
+                      },
+                      "open": {
+                        "example": 17.38
+                      },
+                      "high": {
+                        "example": 17.48
+                      },
+                      "low": {
+                        "example": 17.355
+                      },
+                      "close": {
+                        "example": 17.42
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        }
+      }
+    },
+    "/stats": {
+      "get": {
+        "tags": [
+          "Stock Quote"
+        ],
+        "summary": "Return the most searched stocks",
+        "description": "This endpoint will return a object with the most searched stocks",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "example": [
+                    {
+                      "stock": {
+                        "example": "AT&T"
+                      },
+                      "times_requested": {
+                        "example": 3
+                      }
+                    },
+                    {
+                      "stock": {
+                        "example": "TACT"
+                      },
+                      "times_requested": {
+                        "example": 2
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    }
+  }
+}

@@ -11,6 +11,7 @@ const generateJwtToken = (user) => {
 }
 
 const registerUserController = async (req, res) => {
+
     try {
         const { email, role } = req.body;
 

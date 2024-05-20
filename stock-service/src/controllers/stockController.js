@@ -1,5 +1,4 @@
 const axios = require('axios');
-const logger = require('../utils/logger');
 
 const getStockQuote = async (req, res) => {
     try {

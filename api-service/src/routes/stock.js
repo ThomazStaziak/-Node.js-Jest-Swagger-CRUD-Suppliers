@@ -10,7 +10,6 @@ const {
 } = require('../controllers/stockController');
 const { stockSchema } = require('../validations/stock');
 
-
 router.get('/stock', authorizeToken, authorizeValidation(stockSchema, 'query'), getStockQuoteController);
 router.get('/history', authorizeToken, getHistoryController);
 router.get('/stats', authorizeToken, authorizeRole('admin'), getStatsController);
